@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>POWERLAY</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Consolas, monospace;
+}
+
+body{
+background:black;
+color:white;
+overflow:hidden;
+}
+
+/* экран загрузки */
+
+#loader{
+position:fixed;
+width:100%;
+height:100%;
+background:black;
+display:flex;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+z-index:9999;
+}
+
+.loaderText{
+color:#00ff00;
+font-size:22px;
+animation:blink 1s infinite;
+}
+
+@keyframes blink{
+50%{opacity:0.3}
+}
+
+/* основной сайт */
+
+#site{
+display:none;
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+text-align:center;
+z-index:2;
+position:relative;
+}
+
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:0;
+}
+
+/* контейнер */
+
+.container{
+background:rgba(0,0,0,0.85);
+border:2px solid #00ffff;
+box-shadow:0 0 25px #00ffff;
+padding:40px;
+border-radius:15px;
+max-width:700px;
+}
+
+/* аватар */
+
+.avatar{
+width:120px;
+height:120px;
+border-radius:50%;
+margin-bottom:20px;
+border:2px solid #00ffff;
+box-shadow:0 0 20px #00ffff;
+}
+
+/* заголовок */
+
+h1{
+font-size:50px;
+color:#00ffff;
+text-shadow:0 0 20px #00ffff;
+margin-bottom:20px;
+}
+
+/* текст */
+
+p{
+font-size:18px;
+line-height:1.6;
+margin-bottom:10px;
+}
+
+/* подпись */
+
+.signature{
+color:#ff4bff;
+text-shadow:0 0 10px #ff4bff;
+margin-top:10px;
+}
+
+/* счётчик */
+
+.counter{
+margin-top:20px;
+color:#00ff00;
+font-size:16px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- экран загрузки -->
+
+<div id="loader">
+<div class="loaderText">INITIALIZING SYSTEM...</div>
+<div class="loaderText">LOADING POWERLAY...</div>
+<div class="loaderText">ACCESS GRANTED...</div>
+</div>
+
+<!-- матрица -->
+
+<canvas id="matrix"></canvas>
+
+<!-- сайт -->
+
+<div id="site">
+
+<div class="container">
+
+<img class="avatar" src="https://i.imgur.com/4M34hi2.png">
+
+<h1>POWERLAY</h1>
+
+<p>
+Привет, это POWERLAY. Сейчас я скажу тебе, как нужно мне писать.
+Пиши всё одним сообщением, старайся писать не грубо.
+Не проси что-либо бесплатно, не пиши угрозы, спам и т.д. — ЧС.
+</p>
+
+<p>На этом всё.</p>
+
+<p class="signature">С любовью, POWERLAY ❤️</p>
+
+<div class="counter">
+Visitors: <span id="visits">0</span>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+/* загрузка */
+
+setTimeout(()=>{
+document.getElementById("loader").style.display="none";
+document.getElementById("site").style.display="flex";
+},3000)
+
+/* счётчик */
+
+let visits=localStorage.getItem("powerlay_visits");
+
+if(!visits){
+visits=1;
+}else{
+visits++;
+}
+
+localStorage.setItem("powerlay_visits",visits);
+document.getElementById("visits").innerText=visits;
+
+/* матрица */
+
+const canvas=document.getElementById("matrix");
+const ctx=canvas.getContext("2d");
+
+canvas.height=window.innerHeight;
+canvas.width=window.innerWidth;
+
+const letters="01POWERLAY";
+const fontSize=16;
+const columns=canvas.width/fontSize;
+
+const drops=[];
+
+for(let x=0;x<columns;x++)
+drops[x]=1;
+
+function draw(){
+
+ctx.fillStyle="rgba(0,0,0,0.05)";
+ctx.fillRect(0,0,canvas.width,canvas.height);
+
+ctx.fillStyle="#00ff00";
+ctx.font=fontSize+"px monospace";
+
+for(let i=0;i<drops.length;i++){
+
+const text=letters.charAt(Math.floor(Math.random()*letters.length));
+
+ctx.fillText(text,i*fontSize,drops[i]*fontSize);
+
+if(drops[i]*fontSize>canvas.height&&Math.random()>0.975)
+drops[i]=0;
+
+drops[i]++;
+
+}
+
+}
+
+setInterval(draw,35);
+
+</script>
+
+</body>
+</html>
